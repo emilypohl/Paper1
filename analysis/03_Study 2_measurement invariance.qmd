@@ -1,0 +1,1287 @@
+---
+title: "03_Study 2_measurement invariance"
+format: pdf
+editor: visual
+---
+
+# Measurement invariance: EmEx
+### EmEx / Anger 
+
+  anger_hide ~~ 0*anger_hide
+```{r}
+MI_modelH1a <- '
+  MI_EmEx      =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+
+  MI_Anger     =~ 1*anger_intense + anger_frequent
+  MI_Anger ~~ 1*MI_Anger
+
+  MI_HideAnger =~ 1*anger_suppress + anger_hide
+  MI_HideAnger ~~ 1*MI_HideAnger
+'
+
+fit_H1a <- cfa(MI_modelH1a,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H1a, "converged")
+
+summary(fit_H1a, fit.measures = TRUE)
+fitMeasures(fit_H1a, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+```{r}
+fit_config <- cfa(
+  MI_modelH1a,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH1a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH1a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+
+### EmEx / Anxiety
+```{r}
+MI_modelH2a <- '
+  MI_EmEx      =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+
+  MI_Anxiety     =~ 1*anxiety_intense + anxiety_frequent
+  MI_Anxiety ~~ 1*MI_Anxiety
+
+  MI_HideAnxiety =~ 1*anxiety_suppress + anxiety_hide
+  MI_HideAnxiety ~~ 1*MI_HideAnxiety
+'
+
+fit_anx <- cfa(MI_modelH2a,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_anx, "converged")
+
+summary(fit_anx, fit.measures = TRUE)
+fitMeasures(fit_anx, c("cfi", "tli", "rmsea", "srmr")) 
+
+```
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH2a,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH2a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH2a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+  shame_hide ~~ 0*shame_hide
+### EmEx / Shame
+```{r}
+MI_modelH3a <- '
+  MI_EmEx      =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+
+  MI_Shame     =~ 1*shame_intense + shame_frequent
+  MI_Shame ~~ 1*MI_Shame
+
+  MI_HideShame =~ 1*shame_suppress + shame_hide
+  MI_HideShame ~~ 1*MI_HideShame
+  
+'
+
+
+
+fit_shame <- cfa(MI_modelH3a,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_shame, "converged")
+
+summary(fit_shame, fit.measures = TRUE)
+fitMeasures(fit_shame, c("cfi", "tli", "rmsea", "srmr")) 
+
+```
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH3a,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH3a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH3a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+### EmEx / Joy
+```{r}
+MI_modelH4a <- '
+  MI_EmEx      =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+
+  MI_Joy     =~ 1*joy_intense + joy_frequent
+  MI_Joy ~~ 1*MI_Joy
+
+  MI_FakeJoy =~ 1*joy_fake
+   MI_FakeJoy ~~ 1* MI_FakeJoy
+  
+'
+
+
+
+fit_joy <- cfa(MI_modelH4a,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_joy, "converged")
+
+summary(fit_joy, fit.measures = TRUE)
+fitMeasures(fit_joy, c("cfi", "tli", "rmsea", "srmr")) 
+
+```
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH4a,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH4a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH4a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+
+### EmEx / Pride
+```{r}
+MI_modelH5a <- '
+  MI_EmEx      =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+
+  MI_Pride     =~ 1*pride_intense + pride_frequent
+  MI_Pride ~~ 1*MI_Pride
+
+  MI_FakePride =~ 1*pride_fake
+   MI_FakePride ~~ 1*MI_FakePride
+  
+'
+
+
+
+fit_joy <- cfa(MI_modelH5a,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_joy, "converged")
+
+summary(fit_joy, fit.measures = TRUE)
+fitMeasures(fit_joy, c("cfi", "tli", "rmsea", "srmr")) 
+
+```
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH5a,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH5a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH5a,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+## Measurement Invariance: Dep
+
+### Testing 05.02.26 --> *clean this up
+
+```{r}
+# Pakete
+library(lavaan)
+library(dplyr)
+library(semTools)  # für lavTestScore()
+
+# 0) Modelle (Dep vs. EE) – EE-Modell musst du ggf. anpassen (Items/Faktorname)
+
+MI_modelH1b <- '
+
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Anger =~ 1*anger_intense + anger_frequent
+
+  MI_HideAnger =~ 1*anger_suppress + anger_hide
+'
+
+
+# 1) Configural
+fit_config <- cfa(
+  MI_modelH1b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  std.lv = FALSE  # marker-variable identification (default). Keep as is for now.
+)
+
+inspect(fit_config, "converged")
+fitMeasures(fit_config, c("cfi","tli","rmsea","srmr"))
+
+summary(fit_config, standardized = TRUE)
+
+
+```
+
+```{r}
+fit_metric <- cfa(
+  MI_modelH1b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings"),
+  std.lv = FALSE
+)
+
+inspect(fit_metric, "converged")
+fitMeasures(fit_metric, c("cfi","tli","rmsea","srmr"))
+
+anova(fit_config, fit_metric)
+
+```
+
+```{r}
+mi_metric <- modindices(fit_metric, sort = TRUE)
+
+## Show only loading-related MIs (the "=~" operator)
+subset(mi_metric,
+       op == "=~" &
+       lhs %in% c("MI_Dep") &
+       rhs %in% c("dep1","dep2","dep3","dep4","dep5"))
+
+head(mi_metric, 20)
+
+```
+
+```{r}
+model_dep <- '
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+'
+
+fit_dep_config <- cfa(model_dep, data = data_clean, group = "LANGUAGE")
+fit_dep_metric <- cfa(model_dep, data = data_clean, group = "LANGUAGE",
+                      group.equal = "loadings")
+
+anova(fit_dep_config, fit_dep_metric)
+
+fitMeasures(fit_dep_config, c("cfi","rmsea"))
+fitMeasures(fit_dep_metric, c("cfi","rmsea"))
+
+```
+
+```{r}
+mi_dep <- modindices(fit_dep_metric, sort = TRUE)
+
+subset(mi_dep,
+       op == "=~" &
+       lhs == "MI_Dep")
+
+```
+
+```{r}
+fit_dep_eng <- cfa(model_dep,
+                   data = subset(data_clean, LANGUAGE == "eng"))
+
+fit_dep_ger <- cfa(model_dep,
+                   data = subset(data_clean, LANGUAGE == "ger"))
+
+fitMeasures(fit_dep_eng, c("cfi","rmsea","srmr"))
+fitMeasures(fit_dep_ger, c("cfi","rmsea","srmr"))
+
+```
+# Reliability Depersonalization per country
+
+```{r}
+dep_items <- c("dep1", "dep2", "dep3", "dep4", "dep5")
+
+# --- Cronbach's alpha by group ---
+alpha_eng <- psych::alpha(
+  data_clean %>% filter(LANGUAGE == "eng") %>% select(all_of(dep_items)),
+  check.keys = TRUE
+)
+
+alpha_ger <- psych::alpha(
+  data_clean %>% filter(LANGUAGE == "ger") %>% select(all_of(dep_items)),
+  check.keys = TRUE
+)
+
+
+```
+
+
+# Partial invariance 
+
+## Anger
+
+```{r}
+MI_modelH1b <- '
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Anger     =~ anger_intense + anger_frequent
+  MI_HideAnger =~ anger_suppress + anger_hide
+'
+
+# 1) Configural 
+fit_H1b_config <- cfa(MI_modelH1b,
+                      data = data_clean,
+                      group = "LANGUAGE")
+
+# 2) Metric
+fit_H1b_metric <- cfa(MI_modelH1b,
+                      data = data_clean,
+                      group = "LANGUAGE",
+                      group.equal = "loadings")
+
+# 3) Partial metric (alle Ladungen gleich, außer dep5 auf MI_Dep)
+fit_H1b_partial <- cfa(MI_modelH1b,
+                       data = data_clean,
+                       group = "LANGUAGE",
+                       group.equal = "loadings",
+                       group.partial = "MI_Dep=~dep5")
+
+summary(fit_H1b_partial, fit.measures = TRUE)
+fitMeasures(fit_H1b_partial, c("cfi","tli","rmsea","srmr"))
+
+#  ΔCFI / ΔRMSEA
+cbind(
+  config = fitMeasures(fit_H1b_config, c("cfi","rmsea")),
+  metric = fitMeasures(fit_H1b_metric, c("cfi","rmsea")),
+  partial= fitMeasures(fit_H1b_partial, c("cfi","rmsea"))
+)
+
+anova(fit_H1b_config, fit_H1b_metric, fit_H1b_partial)
+
+```
+
+- partial metric invariance given! 
+
+## Anxiety
+
+```{r}
+MI_modelH2b <- '
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Anxiety =~ anxiety_intense + anxiety_frequent
+  MI_HideAnxiety =~ c(h1, h2)*anxiety_suppress + c(h1, h2)*anxiety_hide
+'
+
+# 1) Configural 
+fit_H2b_config <- cfa(MI_modelH2b,
+                      data = data_clean,
+                      group = "LANGUAGE")
+
+# 2) Metric
+fit_H2b_metric <- cfa(MI_modelH2b,
+                      data = data_clean,
+                      group = "LANGUAGE",
+                      group.equal = "loadings")
+
+# 3) Partial metric (alle Ladungen gleich, außer dep5 auf MI_Dep)
+fit_H2b_partial <- cfa(MI_modelH2b,
+                       data = data_clean,
+                       group = "LANGUAGE",
+                       group.equal = "loadings",
+                       group.partial = "MI_Dep=~dep5")
+
+summary(fit_H2b_partial, fit.measures = TRUE)
+fitMeasures(fit_H2b_partial, c("cfi","tli","rmsea","srmr"))
+
+#  ΔCFI / ΔRMSEA
+cbind(
+  config = fitMeasures(fit_H2b_config, c("cfi","rmsea")),
+  metric = fitMeasures(fit_H2b_metric, c("cfi","rmsea")),
+  partial= fitMeasures(fit_H2b_partial, c("cfi","rmsea"))
+)
+
+anova(fit_H2b_config, fit_H2b_metric, fit_H2b_partial)
+
+```
+
+-> metric invariance given! 
+
+## Shame
+
+```{r}
+MI_modelH3b <- '
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Shame     =~ shame_intense + shame_frequent
+  MI_HideShame =~ shame_suppress + shame_hide
+'
+
+# 1) Configural 
+fit_H3b_config <- cfa(MI_modelH3b,
+                      data = data_clean,
+                      group = "LANGUAGE")
+
+# 2) Metric
+fit_H3b_metric <- cfa(MI_modelH3b,
+                      data = data_clean,
+                      group = "LANGUAGE",
+                      group.equal = "loadings")
+
+# 3) Partial metric (alle Ladungen gleich, außer dep5 auf MI_Dep)
+fit_H3b_partial <- cfa(MI_modelH3b,
+                       data = data_clean,
+                       group = "LANGUAGE",
+                       group.equal = "loadings",
+                       group.partial = "MI_Dep=~dep5")
+
+summary(fit_H3b_partial, fit.measures = TRUE)
+fitMeasures(fit_H3b_partial, c("cfi","tli","rmsea","srmr"))
+
+#  ΔCFI / ΔRMSEA
+cbind(
+  config = fitMeasures(fit_H3b_config, c("cfi","rmsea")),
+  metric = fitMeasures(fit_H3b_metric, c("cfi","rmsea")),
+  partial= fitMeasures(fit_H3b_partial, c("cfi","rmsea"))
+)
+
+anova(fit_H3b_config, fit_H3b_metric, fit_H3b_partial)
+
+```
+
+-> partial metric invariance given
+
+##Joy
+
+```{r}
+MI_modelH4b <- '
+  MI_Dep =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Joy     =~ joy_intense + joy_frequent
+  MI_FakeJoy =~ joy_fake
+'
+
+# 1) Configural 
+fit_H4b_config <- cfa(MI_modelH4b,
+                      data = data_clean,
+                      group = "LANGUAGE")
+
+# 2) Metric
+fit_H4b_metric <- cfa(MI_modelH4b,
+                      data = data_clean,
+                      group = "LANGUAGE",
+                      group.equal = "loadings")
+
+# 3) Partial metric (alle Ladungen gleich, außer dep5 auf MI_Dep)
+fit_H4b_partial <- cfa(MI_modelH4b,
+                       data = data_clean,
+                       group = "LANGUAGE",
+                       group.equal = "loadings",
+                       group.partial = "MI_Dep=~dep5")
+
+summary(fit_H4b_partial, fit.measures = TRUE)
+fitMeasures(fit_H4b_partial, c("cfi","tli","rmsea","srmr"))
+
+#  ΔCFI / ΔRMSEA
+cbind(
+  config = fitMeasures(fit_H4b_config, c("cfi","rmsea")),
+  metric = fitMeasures(fit_H4b_metric, c("cfi","rmsea")),
+  partial= fitMeasures(fit_H4b_partial, c("cfi","rmsea"))
+)
+
+anova(fit_H4b_config, fit_H4b_metric, fit_H4b_partial)
+
+```
+
+-> partial metric invariance given
+
+### Dep / Anger
+  anger_hide ~~ 0*anger_hide
+```{r}
+MI_modelH1b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Anger     =~ anger_intense + anger_frequent
+
+  MI_HideAnger =~ anger_suppress + anger_hide
+'
+
+fit_H1b <- cfa(MI_modelH1b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H1b, "converged")
+
+summary(fit_H1b, fit.measures = TRUE)
+fitMeasures(fit_H1b, c("cfi", "tli", "rmsea", "srmr"))
+
+modindices(fit_metric, sort = TRUE)
+
+```
+
+```{r}
+library(lavaan)
+
+fit_metric <- cfa(MI_modelH1b,
+                  data = data_clean,
+                  group = "LANGUAGE",
+                  group.equal = "loadings")
+
+anova(fit_H1b, fit_metric)
+
+fit_partial <- cfa(MI_modelH1b,
+                   data = data_clean,
+                   group = "LANGUAGE",
+                   group.equal = "loadings",
+                   group.partial = "MI_Dep =~ dep5")
+
+anova(fit_metric, fit_partial)
+
+
+fitMeasures(fit_H1b, "cfi")
+fitMeasures(fit_metric, "cfi")
+
+subset(modindices(fit_metric),
+       grepl("^dep", rhs))
+
+```
+
+```{r}
+fit_config <- cfa(
+  MI_modelH1b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH1b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH1b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+### Dep / Anxiety
+  anger_hide ~~ 0*anger_hide
+```{r}
+library(lavaan)
+MI_modelH2b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Anxiety     =~ 1*anxiety_intense + anxiety_frequent
+  MI_Anxiety ~~ 1*MI_Anxiety
+
+  MI_HideAnxiety =~ 1*anxiety_suppress + anxiety_hide
+  MI_HideAnxiety ~~ 1*MI_HideAnxiety
+
+'
+
+fit_H2b <- cfa(MI_modelH2b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H2b, "converged")
+
+summary(fit_H2b, fit.measures = TRUE)
+fitMeasures(fit_H2b, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+
+
+```{r}
+MI_modelH3b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4
+
+  MI_Anxiety     =~ 1*anxiety_intense + anxiety_frequent
+  MI_Anxiety ~~ 1*MI_Anxiety
+
+  MI_HideAnxiety =~ 1*anxiety_suppress + anxiety_hide
+  MI_HideAnxiety ~~ 1*MI_HideAnxiety
+
+'
+
+fit_H3b <- cfa(MI_modelH3b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H3b, "converged")
+
+summary(fit_H3b, fit.measures = TRUE)
+fitMeasures(fit_H3b, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH2b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+fit_metric <- cfa(
+  MI_modelH2b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+
+```{r}
+
+fit_config <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+```
+
+
+
+
+```{r}
+fit_metric <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+### Dep / Shame
+
+```{r}
+MI_modelH3b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Shame     =~ 1*shame_intense + shame_frequent
+  MI_Shame ~~ 1*MI_Shame
+
+  MI_HideShame =~ 1*shame_suppress + shame_hide
+  MI_HideShame ~~ 1*MI_HideShame
+
+'
+
+fit_H3b <- cfa(MI_modelH3b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H3b, "converged")
+
+summary(fit_H3b, fit.measures = TRUE)
+fitMeasures(fit_H3b, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+```{r}
+fit_config <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH3b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+
+### Dep / Joy
+
+```{r}
+MI_modelH4b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Joy     =~ 1*joy_intense + joy_frequent
+  MI_Joy ~~ 1*MI_Joy
+
+  MI_FakeJoy =~ 1*joy_fake 
+  MI_FakeJoy ~~ 1*MI_FakeJoy
+
+'
+
+fit_H4b <- cfa(MI_modelH4b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H4b, "converged")
+
+summary(fit_H4b, fit.measures = TRUE)
+fitMeasures(fit_H4b, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+```{r}
+fit_config <- cfa(
+  MI_modelH4b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH4b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH4b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+
+### Dep / Pride
+
+```{r}
+MI_modelH5b <- '
+  MI_Dep      =~ dep1 + dep2 + dep3 + dep4 + dep5
+
+  MI_Pride    =~ 1*pride_intense + pride_frequent
+  MI_Pride ~~ 1*MI_Pride
+
+  MI_FakePride =~ 1*pride_fake 
+  MI_FakePride ~~ 1*MI_FakePride
+
+'
+
+fit_H5b <- cfa(MI_modelH5b,
+            data = data_clean,
+            group = "LANGUAGE")
+
+inspect(fit_H5b, "converged")
+
+summary(fit_H5b, fit.measures = TRUE)
+fitMeasures(fit_H5b, c("cfi", "tli", "rmsea", "srmr"))
+
+
+```
+```{r}
+fit_config <- cfa(
+  MI_modelH5b,
+  data  = data_clean,
+  group = "LANGUAGE"
+)
+
+inspect(fit_config, "converged")
+summary(fit_config, fit.measures = TRUE)
+
+
+```
+```{r}
+fit_metric <- cfa(
+  MI_modelH5b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = "loadings"
+)
+
+inspect(fit_metric, "converged")
+summary(fit_metric, fit.measures = TRUE)
+
+```
+
+```{r}
+fit_scalar <- cfa(
+  MI_modelH5b,
+  data  = data_clean,
+  group = "LANGUAGE",
+  group.equal = c("loadings", "intercepts")
+)
+inspect(fit_scalar, "converged")
+summary(fit_scalar, fit.measures = TRUE)
+```
+
+```{r}
+fits <- list(
+  config = fit_config,
+  metric = fit_metric,
+  scalar = fit_scalar
+)
+
+sapply(fits, function(x)
+  fitMeasures(x, c("cfi","rmsea","srmr")))
+```
+
+
+```{r}
+
+fitMeasures(fit_metric, "cfi") - fitMeasures(fit_config, "cfi")
+fitMeasures(fit_scalar, "cfi") - fitMeasures(fit_metric, "cfi")
+
+```
+
+## Invariance only for EmEx 
+
+```{r}
+
+data_clean$LANGUAGE <- factor(
+  data_clean$LANGUAGE,
+  levels = c("ger", "eng", "nan")
+)
+str(data_clean$LANGUAGE)
+
+model_EmEx <- '
+  EmEx_MI =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+'
+
+mi_EmEx <- measurementInvariance(
+  model = model_EmEx,
+  data = data_clean,
+  group = "LANGUAGE",
+  estimator = "MLR",
+  std.lv = TRUE,
+  strict = FALSE
+)
+
+get_fit <- function(fit) {
+  fitMeasures(fit, c("cfi", "rmsea"))
+}
+
+fit_table <- rbind(
+  configural = get_fit(mi_EmEx$fit.configural),
+  metric     = get_fit(mi_EmEx$fit.loadings),
+  scalar     = get_fit(mi_EmEx$fit.intercepts)
+)
+
+fit_table
+
+```
+
+Germany - Canada: 
+ΔCFI = -.0012   ΔRMSEA = -.0091 --> Metric invariance fulfilled 
+
+ΔCFI = -.0313   ΔRMSEA = .0133 --> Scalar invariance not fulfilled
+
+Germany - Canada - Taiwan: 
+ΔCFI = −0.002   ΔRMSEA = −0.009 --> Metric invariance fulfilled 
+
+ΔCFI = −0.031. ΔRMSEA = 0.013   --> Scalar invariance not fulfilled
+
+## Invariance only for Dep
+```{r}
+model_Dep <- '
+  Dep_MI =~ dep1 + dep2 + dep3 + dep4 + dep5 
+'
+
+mi_Dep <- measurementInvariance(
+  model = model_Dep,
+  data = data_clean,
+  group = "LANGUAGE",
+  estimator = "MLR",
+  std.lv = TRUE,
+  strict = TRUE   
+)
+
+get_fit <- function(fit) {
+  fitMeasures(fit, c("cfi", "rmsea"))
+}
+
+fit_table <- rbind(
+  configural = get_fit(mi_Dep$fit.configural),
+  metric     = get_fit(mi_Dep$fit.loadings),
+  scalar     = get_fit(mi_Dep$fit.intercepts)
+)
+
+fit_table
+
+```
+
+Germany - Canada: 
+
+ΔCFI = -.0321   ΔRMSEA = .0076 --> Metric invariance not fulfilled 
+
+ΔCFI = -.0237  ΔRMSEA = -.0021 --> Scalar invariance not fulfilled
+
+Germany - Canada - Taiwan: 
+
+ΔCFI = −0.032 ΔRMSEA = 0.008 --> Metric invariance not fulfilled 
+
+ΔCFI = −0.023 ΔRMSEA = −0.002 --> Scalar invariance not fulfilled
+
