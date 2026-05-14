@@ -5,6 +5,10 @@ format: docx
 editor: visual
 ---
 
+```{r}
+rm(list = ls())
+```
+
 Packages
 ```{r}
 library(haven)
@@ -21,6 +25,7 @@ library(car)
 library(ggplot2)
 library(haven)
 library(tidyr)
+library(grid)
 library(broom)
 library(apaTables)
 library(effectsize) 
@@ -29,15 +34,12 @@ library(semTools)
 library(modsem)
 ```
 
-# Paper 1
-
 # Paper 2
 
 ```{r}
-library(haven)
-data_all <- read_sav("00 ManyTeachers2026.03.06.sav")
-n0 <- nrow(data_all)
-data_clean <- data_all
+data_raw <- read_sav("../data/data_raw/data_raw_study2.sav")
+n0 <- nrow(data_raw)
+data_clean <- data_raw
 ```
 
 # Data preparation 
@@ -72,9 +74,18 @@ data_clean <- data_clean %>%
 n4 <- nrow(data_clean)
 cat("After LANGUAGE filter:", n4, "rows (dropped", n3 - n4, ")\n") 
 
-nrow(data_all)
+nrow(data_raw)
 nrow(data_clean) 
 ```
+
+```{r}
+write_sav(
+  data_clean,
+  "../data/data_clean/data_clean_study2.sav"
+)
+```
+
+
 Data Cleaning and Preparation
 Scale Composition
 ```{r}
@@ -149,11 +160,12 @@ Rel_HideShame <- data_clean[, c("shame_intense", "shame_frequent")]
 psych::alpha(Rel_HideShame)
 ```
 
+Emotional Exhaustion a = .941
 ```{r}
 Rel_EmEx <- data_clean %>% select(emex1:emex9)
 psych::alpha(Rel_EmEx)
 ```
-
+Depersonalization: a = .861
 ```{r}
 Rel_Dep <- data_clean %>% select(dep1:dep5)
 psych::alpha(Rel_Dep)
@@ -190,9 +202,6 @@ print(gender_table)
 ```
 
 ```{r}
-library(apaTables)
-library(psych)
-library(dplyr)
 vars <- data_clean[, c("Joy","Pride","Anger","Anxiety","Shame",
                        "HideAnger","HideAnxiety","HideShame",
                        "FakeJoy","EmEx","Dep","TeachExp","age_real")]
@@ -212,7 +221,7 @@ cor(cor.data_clean,use = "pairwise.complete.obs")
 apa.cor.table(cor.data_clean, landscape = F, filename = "Correlation_2026_03_06.rtf")
 ```
 
-# Correlations
+# Correlation Analysis
 ```{r}
 
 cor.data_clean <- data_clean %>% dplyr::select("EmEx", "Dep", 
@@ -228,10 +237,55 @@ cor(cor.data_clean,use = "pairwise.complete.obs")
 apa.cor.table(cor.data_clean, landscape = F, filename = "Correlation.ManyTeachers.March.rtf")
 ```
 
-# SEM - Latent approach
+# Hypotheses
 
-using library(modsem)
+# Replication and Extension
 
+## Model 1: Emotional Exhaustion
+```{r}
+model_manyteachers_emex_sem <- "
+MI_EmEx       =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
+MI_Anger      =~ anger_intense + anger_frequent
+MI_Anxiety    =~ anxiety_intense + anxiety_frequent
+MI_Joy        =~ joy_intense + joy_frequent 
+
+MI_EmEx ~ MI_Anger + MI_Anxiety + MI_Joy + gender_factor + TeachExp
+
+"
+
+fit_manyteachers_EmEx <- sem(model_manyteachers_emex_sem, data = data_clean)
+summary(fit_manyteachers_EmEx, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
+
+```
+
+```{r}
+parameterEstimates(fit_manyteachers_EmEx, standardized = TRUE, ci = TRUE)
+```
+
+## Model 2: Depersonalization
+
+```{r}
+model_manyteachers_dep_sem <- "
+MI_Dep        =~ dep1 + dep2 + dep3 + dep4 + dep5
+MI_Anger      =~ anger_intense + anger_frequent
+MI_Anxiety    =~ anxiety_intense + anxiety_frequent
+MI_Joy        =~ joy_intense + joy_frequent 
+
+MI_Dep ~ MI_Anger + MI_Anxiety + MI_Joy + gender_factor + TeachExp
+
+"
+
+fit_manyteachers_dep <- sem(model_manyteachers_dep_sem, data = data_clean)
+
+summary(fit_manyteachers_dep, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
+
+```
+
+```{r}
+parameterEstimates(fit_manyteachers_dep, standardized = TRUE, ci = TRUE)
+```
+
+# Emotion * Emotional Labor => Burnout 
 ## Emotional Exhaustion
 ### Model 1: Anger
 
@@ -249,8 +303,6 @@ summary(fit_1a, standardized = TRUE)
 ```
 
 ```{r}
-library(ggplot2)
-
 # Coefficients from your modsem output
 b0 <- 0                 # intercept / latent mean (centered)
 b_anger <- 0.467        # beta for MI_Anger (now moderator)
@@ -312,9 +364,6 @@ plotMI
 ```
 
 ```{r}
-library(ggplot2)
-library(grid)
-
 # Coefficients from modsem output
 b0 <- 0
 b_anger <- 0.467
@@ -434,85 +483,6 @@ fit_3a <- modsem(model_sem_3a , data = data_clean)
 summary(fit_3a)
 ```
 
-```{r}
-library(ggplot2)
-
-# Coefficients from your modsem output
-b0 <- 0
-b_shame <- 0.224
-b_hide <- 0.155
-b_interaction <- 0.157
-
-# Standard errors
-SE_b0 <- 0
-SE_shame <- 0.064
-SE_hide <- 0.087
-SE_interaction <- 0.083
-
-plot_data <- expand.grid(
-  MI_Shame = seq(-2, 2, by = 0.1),        # x-axis predictor
-  MI_HideShame = c(-1, 0, 1)              # moderator
-)
-
-plot_data$MI_EmEx <- with(
-  plot_data,
-  b0 + b_shame * MI_Shame +
-    b_hide * MI_HideShame +
-    b_interaction * MI_Shame * MI_HideShame
-)
-
-plot_data$SE_pred <- with(plot_data, sqrt(
-  SE_b0^2 +
-    (SE_shame * MI_Shame)^2 +
-    (SE_hide * MI_HideShame)^2 +
-    (SE_interaction * MI_Shame * MI_HideShame)^2
-))
-
-plot_data$lower <- plot_data$MI_EmEx - 1.96 * plot_data$SE_pred
-plot_data$upper <- plot_data$MI_EmEx + 1.96 * plot_data$SE_pred
-
-plotMI_shame2 <- ggplot(
-  plot_data,
-  aes(
-    x = MI_Shame,
-    y = MI_EmEx,
-    color = factor(MI_HideShame),
-    linetype = factor(MI_HideShame),
-    group = MI_HideShame
-  )
-) +
-  geom_line() +
-  geom_ribbon(
-    aes(ymin = lower, ymax = upper),
-    fill = "gray50",
-    alpha = 0.05,
-    color = NA
-  ) +
-  scale_linetype_manual(
-    values = c("longdash", "dotted", "solid"),
-    labels = c("Low", "Mean", "High")
-  ) +
-  scale_color_manual(
-    values = c("#000000", "#000000", "#000000"),
-    labels = c("Low", "Mean", "High")
-  ) +
-  labs(
-    x = "MI_Shame",
-    y = "Predicted MI_EmEx",
-    title = "Interaction Effect: MI_Shame × MI_HideShame",
-    color = "MI_HideShame Level",
-    linetype = "MI_HideShame Level"
-  ) +
-  theme_minimal() +
-  coord_cartesian(ylim = c(-2, 2)) +
-  theme(
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold"),
-    legend.text = element_text(size = 10)
-  )
-
-plotMI_shame2
-```
 ### Model 4: Joy 
 
 ```{r}
@@ -548,8 +518,6 @@ summary(fit_1b, standardized = TRUE)
 ```
 
 ```{r}
-library(ggplot2)
-
 # Coefficients from your modsem output
 b0 <- 0                  # intercept / latent mean (centered)
 b_anger <- 0.476         # beta for MI_Anger (moderator)
@@ -633,102 +601,6 @@ plotMI_dep <- ggplot(
 plotMI_dep
 ```
 
-```{r}
-library(ggplot2)
-library(grid)
-
-# Coefficients from modsem output
-b0 <- 0
-b_anger <- 0.476
-b_hide <- 0.087
-b_interaction <- 0.080
-
-# Standard errors from modsem output
-SE_b0 <- 0
-SE_anger <- 0.062
-SE_hide <- 0.044
-SE_interaction <- 0.032
-
-# Create dataframe for plotting
-plot_data <- expand.grid(
-  MI_HideAnger = seq(-2, 2, by = 0.1),
-  MI_Anger = c(-1, 0, 1)
-)
-
-# Calculate predicted Depersonalization
-plot_data$MI_Dep <- with(
-  plot_data,
-  b0 + b_hide * MI_HideAnger +
-    b_anger * MI_Anger +
-    b_interaction * MI_HideAnger * MI_Anger
-)
-
-# Approximate SE for predicted values
-plot_data$SE_pred <- with(plot_data, sqrt(
-  SE_b0^2 +
-    (SE_hide * MI_HideAnger)^2 +
-    (SE_anger * MI_Anger)^2 +
-    (SE_interaction * MI_HideAnger * MI_Anger)^2
-))
-
-# Confidence intervals
-plot_data$lower <- plot_data$MI_Dep - 1.96 * plot_data$SE_pred
-plot_data$upper <- plot_data$MI_Dep + 1.96 * plot_data$SE_pred
-
-# Recode moderator labels
-plot_data$Anger_Level <- factor(
-  plot_data$MI_Anger,
-  levels = c(-1, 0, 1),
-  labels = c("Low", "Medium", "High")
-)
-
-# Plot
-plotMI_dep <- ggplot(
-  plot_data,
-  aes(
-    x = MI_HideAnger,
-    y = MI_Dep,
-    linetype = Anger_Level,
-    group = Anger_Level
-  )
-) +
-  geom_ribbon(
-    aes(ymin = lower, ymax = upper),
-    fill = "grey50",
-    alpha = 0.08,
-    color = NA
-  ) +
-  geom_line(color = "black", linewidth = 0.8) +
-  scale_linetype_manual(
-    values = c("Low" = "dotted",
-               "Medium" = "dashed",
-               "High" = "solid"),
-    name = "Anger"
-  ) +
-  labs(
-    x = "Hiding Anger",
-    y = "Depersonalization"
-  ) +
-  coord_cartesian(ylim = c(-2, 2)) +
-  theme_minimal(base_family = "Times New Roman") +
-  theme(
-    plot.title = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_line(linewidth = 0.2),
-    axis.line = element_line(color = "black", linewidth = 0.3),
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold", size = 12),
-    legend.text = element_text(size = 11),
-    axis.title = element_text(size = 12),
-    axis.text = element_text(size = 11),
-    legend.key.width = unit(2.2, "cm"),
-    legend.key.height = unit(0.7, "cm")
-  )
-
-# Display plot
-plotMI_dep
-```
-
 ### Model 2: Anxiety
 
 ```{r}
@@ -742,152 +614,6 @@ MI_HideAnxiety =~ anxiety_suppress + anxiety_hide
 
 fit_2b <- modsem(model_sem_2b , data = data_clean)
 summary(fit_2b, standardized = TRUE)
-```
-
-```{r}
-library(ggplot2)
-
-# Coefficients from your modsem output: Anxiety model
-b0 <- 0
-b_anxiety <- 0.301
-b_hide <- -0.144
-b_interaction <- -0.038
-
-# Standard errors
-SE_b0 <- 0
-SE_anxiety <- 0.043
-SE_hide <- 0.055
-SE_interaction <- 0.026
-
-plot_data <- expand.grid(
-  MI_Anxiety = seq(-2, 2, by = 0.1),       # x-axis predictor
-  MI_HideAnxiety = c(-1, 0, 1)             # moderator
-)
-
-plot_data$MI_Dep <- with(
-  plot_data,
-  b0 + b_anxiety * MI_Anxiety +
-    b_hide * MI_HideAnxiety +
-    b_interaction * MI_Anxiety * MI_HideAnxiety
-)
-
-plot_data$SE_pred <- with(plot_data, sqrt(
-  SE_b0^2 +
-    (SE_anxiety * MI_Anxiety)^2 +
-    (SE_hide * MI_HideAnxiety)^2 +
-    (SE_interaction * MI_Anxiety * MI_HideAnxiety)^2
-))
-
-plot_data$lower <- plot_data$MI_Dep - 1.96 * plot_data$SE_pred
-plot_data$upper <- plot_data$MI_Dep + 1.96 * plot_data$SE_pred
-
-plotMI_anxiety2 <- ggplot(
-  plot_data,
-  aes(
-    x = MI_Anxiety,
-    y = MI_Dep,
-    color = factor(MI_HideAnxiety),
-    linetype = factor(MI_HideAnxiety),
-    group = MI_HideAnxiety
-  )
-) +
-  geom_line() +
-  geom_ribbon(
-    aes(ymin = lower, ymax = upper),
-    fill = "gray50",
-    alpha = 0.05,
-    color = NA
-  ) +
-  scale_linetype_manual(
-    values = c("longdash", "dotted", "solid"),
-    labels = c("Low", "Mean", "High")
-  ) +
-  scale_color_manual(
-    values = c("#000000", "#000000", "#000000"),
-    labels = c("Low", "Mean", "High")
-  ) +
-  labs(
-    x = "MI_Anxiety",
-    y = "Predicted MI_Dep",
-    title = "Interaction Effect: MI_Anxiety × MI_HideAnxiety",
-    color = "MI_HideAnxiety Level",
-    linetype = "MI_HideAnxiety Level"
-  ) +
-  theme_minimal() +
-  coord_cartesian(ylim = c(-2, 2)) +
-  theme(
-    legend.position = "bottom",
-    legend.title = element_text(face = "bold"),
-    legend.text = element_text(size = 10)
-  )
-
-plotMI_anxiety2
-```
-
-```{r}
-library(ggplot2)
-
-# SEM coefficients: Depersonalization model, Anxiety
-b0 <- 0
-b_anxiety <- 0.301
-b_hide <- -0.144
-b_interaction <- -0.038
-
-# Standard errors
-SE_b0 <- 0
-SE_anxiety <- 0.043
-SE_hide <- 0.055
-SE_interaction <- 0.026
-
-# Haupteffekt von Hiding Anxiety:
-# Anxiety wird konstant auf dem Mittelwert gehalten = 0
-plot_data_hide <- data.frame(
-  MI_HideAnxiety = seq(-2, 2, by = 0.1),
-  MI_Anxiety = 0
-)
-
-plot_data_hide$MI_Dep <- with(
-  plot_data_hide,
-  b0 +
-    b_anxiety * MI_Anxiety +
-    b_hide * MI_HideAnxiety +
-    b_interaction * MI_Anxiety * MI_HideAnxiety
-)
-
-plot_data_hide$SE_pred <- with(plot_data_hide, sqrt(
-  SE_b0^2 +
-    (SE_anxiety * MI_Anxiety)^2 +
-    (SE_hide * MI_HideAnxiety)^2 +
-    (SE_interaction * MI_Anxiety * MI_HideAnxiety)^2
-))
-
-plot_data_hide$lower <- plot_data_hide$MI_Dep - 1.96 * plot_data_hide$SE_pred
-plot_data_hide$upper <- plot_data_hide$MI_Dep + 1.96 * plot_data_hide$SE_pred
-
-plot_hide_anxiety_main <- ggplot(
-  plot_data_hide,
-  aes(x = MI_HideAnxiety, y = MI_Dep)
-) +
-  geom_ribbon(
-    aes(ymin = lower, ymax = upper),
-    fill = "gray50",
-    alpha = 0.10
-  ) +
-  geom_line(linewidth = 1) +
-  labs(
-    x = "Hiding Anxiety",
-    y = "Depersonalization",
-    title = "Main Effect: Hiding Anxiety predicting Depersonalization",
-    subtitle = "Anxiety held constant at its mean"
-  ) +
-  theme_minimal() +
-  coord_cartesian(ylim = c(-2, 2)) +
-  theme(
-    plot.title = element_text(face = "bold"),
-    plot.subtitle = element_text(size = 10)
-  )
-
-plot_hide_anxiety_main
 ```
 
 ### Model 3: Shame

@@ -4,6 +4,10 @@ format: pdf
 editor: visual
 ---
 
+```{r}
+rm(list = ls())
+```
+
 # Measurement invariance: EmEx
 ### EmEx / Anger 
 

@@ -2,17 +2,17 @@
 
 This repository contains a template folder structure for a research project.
 
-```
+```         
 .
 ├── README.md
 ├── analysis            <- all things data analysis
-│   └── src             <- functions and other source files
-├── comm
-│   ├── internal_comm   <- internal communication such as meeting notes
-│   └── journal_comm    <- communication with the journal, e.g. peer review
+
 ├── data
 │   ├── data_clean      <- clean version of the data
 │   └── data_raw        <- raw data (don't touch)
+│     └── data_raw_study1
+│     └── data_raw_study2
+
 ├── dissemination
 │   ├── manuscripts
 │   ├── posters
@@ -21,29 +21,29 @@ This repository contains a template folder structure for a research project.
 └── misc                <- miscellaneous files that don't fit elsewhere
 ```
 
-Please note that this is not the only possible way to structure a research project, but it might help you finding a good folder structure for yourself.
+## Pre-registered study: <https://osf.io/yse7p/overview>
 
-## Using the template
+# Statistical Analyses
 
-### 1) Download
+## Study 1
 
-You can download this folder structure on GitHub via `Code` -> `Download ZIP` (see screenshot below) or by cloning the repository. Of course you can also fork this repository and by that create a new research project repository for yourself :wink:.
-<img width="933" alt="Screenshot 2022-12-02 at 15 04 35" src="https://user-images.githubusercontent.com/14146757/205311114-badd0aca-b862-46f0-af34-52a389a89fd9.png">
+Dataset: data_raw_study1.sav 
 
-### 2) Edit this README
+**Script: 01_Study 1_anaylsis.qmd**
 
-The README should contain the information about your research project. For more information on writing good READMEs, please check out [the README chapter](https://the-turing-way.netlify.app/project-design/project-repo/project-repo-readme.html?highlight=readme) of The Turing Way book.
+Descriptive statistics 
+Correlation analyses 
+SEM
 
-### 3) Adjust to your needs
+## Study 2
 
-Add folders that you need and remove those that you don't need.
+Dataset: data_raw_study2.sav
 
-### 4) Add your files
+**Script: 02_Study 2_anaylsis.qmd**
 
-Add your files to the folders. 
+Descriptive statistics 
+Correlation analyses 
+SEM
 
-
-:tada: That's all! Happy researching! :tada:
-
-## Further reading
-Interested in more like this? Check out my newsletter post on [FAIR and reproducible projects](https://heidiseibold.ck.page/posts/setting-up-a-fair-and-reproducible-project).
+**Script: 03_Study 2_measurement invariance.qmd**
+Measurement Invariance Testing 
