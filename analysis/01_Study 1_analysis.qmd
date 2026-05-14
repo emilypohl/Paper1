@@ -33,7 +33,10 @@ library(modsem)
 ```
 
 data_buric : N = 1141
-data_clean : N = 426 = Many Teachers
+
+```{r}
+renv::init()
+```
 
 ```{r}
 data_buric <- read_sav("../data/data_raw/data_raw_study1.sav")
@@ -44,7 +47,6 @@ data_buric <- read_sav("../data/data_raw/data_raw_study1.sav")
 ```{r}
 describe(data_buric$T3EXP)
 ```
-
 
 ```{r}
 data_buric$EmEx_3 <- rowMeans(data_buric[, paste0("EmEx", 1:6, "_3")], na.rm = TRUE)
@@ -94,7 +96,6 @@ cor_matrix <- cor(Items_NegAff_4, use = "pairwise.complete.obs")
 cor_matrix
 ```
 
-
 ```{r}
 items_EmEx_3 <- c("EmEx1_3","EmEx2_3","EmEx3_3",
                   "EmEx4_3","EmEx5_3","EmEx6_3")
@@ -104,7 +105,6 @@ Rel_EmEx_3 <- data_buric[, items_EmEx_3]
 
 psych::alpha(Rel_EmEx_3)
 ```
-
 
 ```{r}
 Rel_EmEx_3 <- data_buric %>% dplyr::select(paste0("EmEx", 1:6, "_3"))
@@ -116,10 +116,8 @@ Rel_EmEx_4 <- data_buric %>% dplyr::select(paste0("EmEx", 1:6, "_4"))
 psych::alpha(Rel_EmEx_4)
 ```
 
+Anger: t3: .808 t4: .847
 
-Anger: 
-t3: .808
-t4: .847
 ```{r}
 Rel_Ang_3 <- data_buric %>% dplyr::select(paste0("Ang", 1:4, "_3"))
 psych::alpha(Rel_Ang_3)
@@ -130,10 +128,8 @@ Rel_Ang_4 <- data_buric %>% dplyr::select(paste0("Ang", 1:4, "_4"))
 psych::alpha(Rel_Ang_4)
 ```
 
+Anxiety: t3: .849 t4: .847
 
-Anxiety: 
-t3: .849
-t4: .847
 ```{r}
 Rel_Anx_3 <- data_buric %>% dplyr::select(paste0("Anx", 1:4, "_3"))
 psych::alpha(Rel_Anx_3)
@@ -144,11 +140,8 @@ Rel_Ang_4 <- data_buric %>% dplyr::select(paste0("Ang", 1:4, "_4"))
 psych::alpha(Rel_Ang_4)
 ```
 
+Joy: t3: .878 t4: .873
 
-
-Joy: 
-t3: .878
-t4: .873
 ```{r}
 Rel_Joy_3 <- data_buric %>% dplyr::select(paste0("Joy", 1:4, "_3"))
 psych::alpha(Rel_Joy_3)
@@ -202,7 +195,6 @@ data_buric$Anx_4_z  <- as.numeric(scale(data_buric$Anx_4))
 data_buric$Ang_4_z  <- as.numeric(scale(data_buric$Ang_4))
 ```
 
-
 ```{r}
 data_buric$gender_factor <- factor(data_buric$T3GENDER,
                                    levels = c(1, 2),
@@ -211,7 +203,8 @@ table(data_buric$T3GENDER)
 describe(data_buric$T3EXP)
 ```
 
-### SEM 
+### SEM
+
 ```{r}
 library(semTools)
 library(lavaan)
@@ -404,4 +397,7 @@ efa <- psych::fa(NegAff_items_4, nfactors = 2, fm = "ml", oblique.scores = TRUE)
 fa.sort(efa)
 ```
 
+```{r}
+renv::snapshot()
+```
 

@@ -10,6 +10,7 @@ rm(list = ls())
 ```
 
 Packages
+
 ```{r}
 library(haven)
 library(dplyr)
@@ -34,6 +35,11 @@ library(semTools)
 library(modsem)
 ```
 
+```{r}
+renv::init()
+```
+
+
 # Paper 2
 
 ```{r}
@@ -42,14 +48,11 @@ n0 <- nrow(data_raw)
 data_clean <- data_raw
 ```
 
-# Data preparation 
+# Data preparation
 
 Exclusion criteria applied: no Taiwanese teachers, not finishing the questionnaire, failing at least 2/3 attention checks, no working experience at a primary or secondary school, previous work experience as a teacher
 
-data_clean <- data_clean %>%
-  filter(LANGUAGE != "nan" | is.na(LANGUAGE))
-n4 <- nrow(data_clean)
-cat("After LANGUAGE filter:", n4, "rows (dropped", n3 - n4, ")\n") 
+data_clean \<- data_clean %\>% filter(LANGUAGE != "nan" \| is.na(LANGUAGE)) n4 \<- nrow(data_clean) cat("After LANGUAGE filter:", n4, "rows (dropped", n3 - n4, ")\n")
 
 ```{r}
 n0 <- nrow(data_clean)
@@ -85,9 +88,8 @@ write_sav(
 )
 ```
 
+Data Cleaning and Preparation Scale Composition
 
-Data Cleaning and Preparation
-Scale Composition
 ```{r}
 
 data_clean$EmEx <- rowMeans(data_clean[, paste0("emex", 1:9)], na.rm = TRUE)
@@ -119,58 +121,67 @@ data_clean$HideNeg <- rowMeans(data_clean[, c("anger_suppress", "anger_hide", "a
 Reliability for habitual emotional experiences
 
 Joy (alpha = .767)
+
 ```{r}
 Rel_Joy <- data_clean[, c("joy_intense", "joy_frequent")]
 psych::alpha(Rel_Joy)
 ```
 
 Anger (alpha = .770)
+
 ```{r}
 Rel_Anger <- data_clean[, c("anger_intense", "anger_frequent")]
 psych::alpha(Rel_Anger)
 ```
 
 Anxiety (alpha = .893)
+
 ```{r}
 Rel_Anxiety <- data_clean[, c("anxiety_intense", "anxiety_frequent")]
 psych::alpha(Rel_Anxiety)
 ```
 
 Shame (alpha = .882)
+
 ```{r}
 Rel_Shame <- data_clean[, c("shame_intense", "shame_frequent")]
 psych::alpha(Rel_Shame)
 ```
 
 Hide Anger a = .817
+
 ```{r}
 Rel_HideAnger <- data_clean[, c("anger_suppress", "anger_hide")]
 psych::alpha(Rel_HideAnger)
 ```
 
 Hide Anxiety a = .828
+
 ```{r}
 Rel_HideAnxiety <- data_clean[, c("anxiety_suppress", "anxiety_hide")]
 psych::alpha(Rel_HideAnxiety)
 ```
 
 Hide Shame a = .882
+
 ```{r}
 Rel_HideShame <- data_clean[, c("shame_intense", "shame_frequent")]
 psych::alpha(Rel_HideShame)
 ```
 
 Emotional Exhaustion a = .941
+
 ```{r}
 Rel_EmEx <- data_clean %>% select(emex1:emex9)
 psych::alpha(Rel_EmEx)
 ```
+
 Depersonalization: a = .861
+
 ```{r}
 Rel_Dep <- data_clean %>% select(dep1:dep5)
 psych::alpha(Rel_Dep)
 ```
-
 
 # Descriptives
 
@@ -222,6 +233,7 @@ apa.cor.table(cor.data_clean, landscape = F, filename = "Correlation_2026_03_06.
 ```
 
 # Correlation Analysis
+
 ```{r}
 
 cor.data_clean <- data_clean %>% dplyr::select("EmEx", "Dep", 
@@ -242,6 +254,7 @@ apa.cor.table(cor.data_clean, landscape = F, filename = "Correlation.ManyTeacher
 # Replication and Extension
 
 ## Model 1: Emotional Exhaustion
+
 ```{r}
 model_manyteachers_emex_sem <- "
 MI_EmEx       =~ emex1 + emex2 + emex3 + emex4 + emex5 + emex6 + emex7 + emex8 + emex9
@@ -285,8 +298,10 @@ summary(fit_manyteachers_dep, fit.measures = TRUE, standardized = TRUE, rsquare 
 parameterEstimates(fit_manyteachers_dep, standardized = TRUE, ci = TRUE)
 ```
 
-# Emotion * Emotional Labor => Burnout 
+# Emotion \* Emotional Labor =\> Burnout
+
 ## Emotional Exhaustion
+
 ### Model 1: Anger
 
 ```{r}
@@ -453,7 +468,7 @@ plotMI <- ggplot(
 plotMI
 ```
 
-### Model 2: Anxiety 
+### Model 2: Anxiety
 
 ```{r}
 model_sem_2a <- '
@@ -468,7 +483,7 @@ fit_2a <- modsem(model_sem_2a , data = data_clean)
 summary(fit_2a, standardized = TRUE)
 ```
 
-### Model 3: Shame 
+### Model 3: Shame
 
 ```{r}
 model_sem_3a <- '
@@ -483,7 +498,7 @@ fit_3a <- modsem(model_sem_3a , data = data_clean)
 summary(fit_3a)
 ```
 
-### Model 4: Joy 
+### Model 4: Joy
 
 ```{r}
 model_sem_4a <- '
